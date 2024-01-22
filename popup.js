@@ -1,20 +1,24 @@
 import { getTree, getChildren } from "./mock-data.js";
 
-const bookmarksBox = document.querySelector(".bookmarks-box");
-
 window.onload = async function () {
-  // const bookmarkTree = await chrome.bookmarks.getTree();
-  const bookmarkTree = getTree();
-  console.log("tree: ", bookmarkTree);
-
-  listBookmarks(bookmarksBox, bookmarkTree);
+  const bookmarksBox = document.querySelector(".bookmarks-box");
+  const bookmarkBarTree = await chrome.bookmarks.getSubTree("1"); // 书签栏
+  const subTree = bookmarkBarTree[0].children;
+  listBookmarks(bookmarksBox, subTree);
 };
 
-function generateItem(node) {
+function listBookmarks(container, bookmarks) {
+  bookmarks.forEach((node) => {
+    const item = generateItem(node);
+    container.append(item);
+  });
+}
+
+function generateItem(bookmarkNode) {
   const item = document.createElement("div");
   item.classList.add("item");
 
-  const isFolder = node.children;
+  const isFolder = bookmarkNode.children;
   if (isFolder) {
     const icon = generateIcon();
     item.append(icon);
@@ -22,20 +26,26 @@ function generateItem(node) {
 
   const titleSpan = document.createElement("span");
   titleSpan.classList.add("text");
-  titleSpan.textContent = node.title;
+  titleSpan.textContent = bookmarkNode.title;
   item.append(titleSpan);
 
-  item.addEventListener("click", () => {
+  item.addEventListener("click", async () => {
     if (isFolder) {
       const icon = item.firstElementChild;
       icon.classList.toggle("expand");
 
-      const childrenContainer = document.createElement("div");
-      childrenContainer.classList.add("left-padding");
-      item.after(childrenContainer);
-      listBookmarks(childrenContainer, node.children);
+      if (item.nextElementSibling?.classList.contains("left-padding")) {
+        // already rendered item's children
+        item.nextElementSibling.classList.toggle("hidden");
+      } else {
+        const childrenContainer = document.createElement("div");
+        childrenContainer.classList.add("left-padding");
+        item.after(childrenContainer);
+        listBookmarks(childrenContainer, bookmarkNode.children);
+      }
     } else {
-      // TODO: open a new tab
+      // open a new tab
+      chrome.tabs.create({ url: bookmarkNode.url });
     }
   });
 
@@ -56,21 +66,4 @@ function generateIcon() {
                     </svg>`;
 
   return icon;
-}
-
-function listBookmarks(container, bookmarks) {
-  bookmarks.forEach((node) => {
-    const item = generateItem(node);
-    container.append(item);
-  });
-}
-
-async function getBookmarkChildren(id) {
-  const children = await chrome.bookmarks.getChildren(id);
-  return children;
-}
-
-async function getBookmarkTree() {
-  const bookmarkTree = await chrome.bookmarks.getTree();
-  return bookmarkTree;
 }
