@@ -51,5 +51,11 @@
       visibility: hidden;
       height: 0;
     }
+
+    .no-data {
+      height: 24px;
+      line-height: 24px;
+      color: #848282;
+    }
   }
 }

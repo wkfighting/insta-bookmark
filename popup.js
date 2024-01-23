@@ -8,6 +8,15 @@ window.onload = async function () {
 };
 
 function listBookmarks(container, bookmarks) {
+  if (bookmarks.length === 0) {
+    const noDataBox = document.createElement("div");
+    noDataBox.classList.add("no-data");
+    noDataBox.innerHTML = "暂无数据";
+    container.append(noDataBox);
+
+    return;
+  }
+
   bookmarks.forEach((node) => {
     const item = generateItem(node);
     container.append(item);
