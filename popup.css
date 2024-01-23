@@ -18,6 +18,7 @@
   .bookmarks-box {
     .item {
       display: flex;
+      align-items: center;
       height: 24px;
 
       .icon {
@@ -25,7 +26,7 @@
         height: 24px;
       }
 
-      .text {
+      .title {
         height: 24px;
         line-height: 24px;
         user-select: none;
@@ -40,6 +41,12 @@
 
       .expand {
         transform: rotate(90deg);
+      }
+
+      .favicon {
+        height: 14px;
+        width: 14px;
+        margin-right: 4px;
       }
     }
 

@@ -1,4 +1,5 @@
-import { getTree, getChildren } from "./mock-data.js";
+import { getFaviconUrl } from "./utils/favicon.js";
+import { createElement } from "./utils/element.js";
 
 window.onload = async function () {
   const bookmarksBox = document.querySelector(".bookmarks-box");
@@ -9,11 +10,8 @@ window.onload = async function () {
 
 function listBookmarks(container, bookmarks) {
   if (bookmarks.length === 0) {
-    const noDataBox = document.createElement("div");
-    noDataBox.classList.add("no-data");
-    noDataBox.innerHTML = "暂无数据";
+    const noDataBox = createElement("div", "no-data", "暂无数据");
     container.append(noDataBox);
-
     return;
   }
 
@@ -24,18 +22,19 @@ function listBookmarks(container, bookmarks) {
 }
 
 function generateItem(bookmarkNode) {
-  const item = document.createElement("div");
-  item.classList.add("item");
+  const item = createElement("div", "item");
 
   const isFolder = bookmarkNode.children;
   if (isFolder) {
     const icon = generateIcon();
     item.append(icon);
+  } else {
+    const favicon = createElement("img", "favicon");
+    favicon.src = getFaviconUrl(bookmarkNode.url);
+    item.append(favicon);
   }
 
-  const titleSpan = document.createElement("span");
-  titleSpan.classList.add("text");
-  titleSpan.textContent = bookmarkNode.title;
+  const titleSpan = createElement("span", "title", bookmarkNode.title);
   item.append(titleSpan);
 
   item.addEventListener("click", async () => {
@@ -47,8 +46,7 @@ function generateItem(bookmarkNode) {
         // already rendered item's children
         item.nextElementSibling.classList.toggle("hidden");
       } else {
-        const childrenContainer = document.createElement("div");
-        childrenContainer.classList.add("left-padding");
+        const childrenContainer = createElement("div", "left-padding");
         item.after(childrenContainer);
         listBookmarks(childrenContainer, bookmarkNode.children);
       }
@@ -62,8 +60,7 @@ function generateItem(bookmarkNode) {
 }
 
 function generateIcon() {
-  const icon = document.createElement("span");
-  icon.classList.add("icon");
+  const icon = createElement("span", "icon");
   icon.innerHTML = `<svg width="24" height="24" fill="none" viewBox="0 0 24 24">
                       <path
                         stroke="currentColor"
