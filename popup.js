@@ -5,6 +5,10 @@ const bookmarksBox = document.querySelector(".bookmarks-box");
 const searchResultBox = document.querySelector(".search-result-box");
 const searchInput = document.querySelector(".search-input");
 
+let searchResultElements = [];
+let curFocusIndex = 0;
+
+// on search input value change
 searchInput.oninput = async () => {
   const resultBookmarks = await chrome.bookmarks.search(searchInput.value);
   if (resultBookmarks.length > 0) {
@@ -13,22 +17,41 @@ searchInput.oninput = async () => {
 
     removeAllChildrenEl(searchResultBox);
     resultBookmarks.forEach((bookmark) => {
-      const item = generateItem(bookmark);
+      const item = generateItem(bookmark, true);
       searchResultBox.append(item);
     });
+
+    curFocusIndex = 0;
+    searchResultElements = searchResultBox.children;
+    setFocus(curFocusIndex);
   } else {
     searchResultBox.classList.add("hidden");
     bookmarksBox.classList.remove("hidden");
   }
 };
 
+document.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowUp") {
+    if (curFocusIndex > 0) {
+      setFocus(curFocusIndex - 1);
+    }
+  }
+
+  if (e.key === "ArrowDown") {
+    if (curFocusIndex < searchResultElements.length - 1) {
+      setFocus(curFocusIndex + 1);
+    }
+  }
+
+  if (e.key === "Enter") {
+    searchResultElements[curFocusIndex].focus();
+  }
+});
+
 window.onload = async function () {
   const bookmarkBarTree = await chrome.bookmarks.getSubTree("1"); // 书签栏
   const subTree = bookmarkBarTree[0].children;
   listBookmarks(bookmarksBox, subTree);
-
-  const res = await chrome.bookmarks.search("");
-  console.log("res", res);
 };
 
 function listBookmarks(container, bookmarks) {
@@ -44,8 +67,12 @@ function listBookmarks(container, bookmarks) {
   });
 }
 
-function generateItem(bookmarkNode) {
+function generateItem(bookmarkNode, focusable = false) {
   const item = createElement("div", "item");
+  if (focusable) {
+    item.setAttribute("tabindex", "-1");
+    item.onfocus = () => openNewTab(bookmarkNode.url);
+  }
 
   const isFolder = bookmarkNode.children;
   if (isFolder) {
@@ -74,12 +101,15 @@ function generateItem(bookmarkNode) {
         listBookmarks(childrenContainer, bookmarkNode.children);
       }
     } else {
-      // open a new tab
-      chrome.tabs.create({ url: bookmarkNode.url });
+      openNewTab(bookmarkNode.url);
     }
   });
 
   return item;
+}
+
+function openNewTab(url) {
+  chrome.tabs.create({ url });
 }
 
 function generateIcon() {
@@ -101,4 +131,10 @@ function removeAllChildrenEl(parent) {
   while (parent.firstElementChild) {
     parent.firstElementChild.remove();
   }
+}
+
+function setFocus(index) {
+  searchResultElements[curFocusIndex].classList.remove("focused");
+  searchResultElements[index].classList.add("focused");
+  curFocusIndex = index;
 }
