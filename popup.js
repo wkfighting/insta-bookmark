@@ -1,11 +1,34 @@
 import { getFaviconUrl } from "./utils/favicon.js";
 import { createElement } from "./utils/element.js";
 
+const bookmarksBox = document.querySelector(".bookmarks-box");
+const searchResultBox = document.querySelector(".search-result-box");
+const searchInput = document.querySelector(".search-input");
+
+searchInput.oninput = async () => {
+  const resultBookmarks = await chrome.bookmarks.search(searchInput.value);
+  if (resultBookmarks.length > 0) {
+    bookmarksBox.classList.add("hidden");
+    searchResultBox.classList.remove("hidden");
+
+    removeAllChildrenEl(searchResultBox);
+    resultBookmarks.forEach((bookmark) => {
+      const item = generateItem(bookmark);
+      searchResultBox.append(item);
+    });
+  } else {
+    searchResultBox.classList.add("hidden");
+    bookmarksBox.classList.remove("hidden");
+  }
+};
+
 window.onload = async function () {
-  const bookmarksBox = document.querySelector(".bookmarks-box");
   const bookmarkBarTree = await chrome.bookmarks.getSubTree("1"); // 书签栏
   const subTree = bookmarkBarTree[0].children;
   listBookmarks(bookmarksBox, subTree);
+
+  const res = await chrome.bookmarks.search("");
+  console.log("res", res);
 };
 
 function listBookmarks(container, bookmarks) {
@@ -72,4 +95,10 @@ function generateIcon() {
                     </svg>`;
 
   return icon;
+}
+
+function removeAllChildrenEl(parent) {
+  while (parent.firstElementChild) {
+    parent.firstElementChild.remove();
+  }
 }
