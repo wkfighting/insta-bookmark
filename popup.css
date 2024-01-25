@@ -15,6 +15,12 @@
     }
   }
 
+  .search-result-box,
+  .bookmarks-box {
+    overflow: scroll;
+    max-height: 450px;
+  }
+
   .item {
     display: flex;
     align-items: center;
@@ -34,7 +40,8 @@
       text-overflow: ellipsis;
     }
 
-    &:hover, &.focused {
+    &:hover,
+    &.focused {
       background-color: #f5f5f5;
     }
 

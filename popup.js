@@ -10,12 +10,18 @@ let curFocusIndex = 0;
 
 // on search input value change
 searchInput.oninput = async () => {
+  if (!searchInput.value) {
+    searchResultBox.classList.add("hidden");
+    bookmarksBox.classList.remove("hidden");
+    return;
+  }
+
+  bookmarksBox.classList.add("hidden");
+  searchResultBox.classList.remove("hidden");
+  removeAllChildrenEl(searchResultBox);
+
   const resultBookmarks = await chrome.bookmarks.search(searchInput.value);
   if (resultBookmarks.length > 0) {
-    bookmarksBox.classList.add("hidden");
-    searchResultBox.classList.remove("hidden");
-
-    removeAllChildrenEl(searchResultBox);
     resultBookmarks.forEach((bookmark) => {
       const item = generateItem(bookmark, true);
       searchResultBox.append(item);
@@ -25,8 +31,8 @@ searchInput.oninput = async () => {
     searchResultElements = searchResultBox.children;
     setFocus(curFocusIndex);
   } else {
-    searchResultBox.classList.add("hidden");
-    bookmarksBox.classList.remove("hidden");
+    const noData = createElement("div", "no-data", "未找到任何搜索结果");
+    searchResultBox.append(noData);
   }
 };
 
@@ -56,7 +62,7 @@ window.onload = async function () {
 
 function listBookmarks(container, bookmarks) {
   if (bookmarks.length === 0) {
-    const noDataBox = createElement("div", "no-data", "暂无数据");
+    const noDataBox = createElement("div", "no-data", "请添加书签");
     container.append(noDataBox);
     return;
   }
