@@ -1,6 +1,7 @@
 .container {
   width: 300px;
   height: 500px;
+  font-size: 14px !important;
 }
 
 .search-box {
@@ -25,17 +26,25 @@
 .item {
   display: flex;
   align-items: center;
-  height: 24px;
+  height: 28px;
 }
 
-.icon {
+.item-tab {
+  height: 100%;
+  width: 1px;
+  padding: 0 7px;
+  background-color: #bdbdbd;
+  background-clip: content-box;
+}
+
+.toggle-icon {
   width: 24px;
   height: 24px;
 }
 
 .title {
-  height: 24px;
-  line-height: 24px;
+  height: 28px;
+  line-height: 28px;
   user-select: none;
   white-space: nowrap;
   overflow: hidden;
@@ -55,10 +64,6 @@
   height: 14px;
   width: 14px;
   margin-right: 4px;
-}
-
-.left-padding {
-  padding-left: 24px;
 }
 
 .hidden {
