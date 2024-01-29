@@ -86,12 +86,13 @@ function generateItemV2(bookmarkNode, level, focusable = false) {
 
   // 添加缩进
   for (let i = 0; i < level; i++) {
-    children.push(createElement("div", "item-tab"));
+    const itemTab = generateItemTab();
+    children.push(itemTab);
   }
 
   const isFolder = bookmarkNode.children;
   if (isFolder) {
-    const toggleIcon = generateIcon();
+    const toggleIcon = generateToggleIcon();
     children.push(toggleIcon);
     item.addEventListener("click", () => {
       toggleIcon.classList.toggle("expand");
@@ -106,8 +107,10 @@ function generateItemV2(bookmarkNode, level, focusable = false) {
     });
   } else {
     const favicon = createElement("img", "favicon");
+    const faviconContainer = createElement("div", "favicon-container");
     favicon.src = getFaviconUrl(bookmarkNode.url);
-    children.push(favicon);
+    faviconContainer.append(favicon);
+    children.push(faviconContainer);
     item.addEventListener("click", () => openNewTab(bookmarkNode.url));
   }
 
@@ -119,21 +122,21 @@ function generateItemV2(bookmarkNode, level, focusable = false) {
   return item;
 }
 
+function generateItemTab() {
+  const itemTab = createElement("div", "item-tab");
+  const itemTabLine = createElement("div", "item-tab-line");
+  itemTab.append(itemTabLine);
+
+  return itemTab;
+}
+
 function openNewTab(url) {
   chrome.tabs.create({ url });
 }
 
-function generateIcon() {
-  const toggleIcon = createElement("div", "toggle-icon");
-  toggleIcon.innerHTML = `<svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-                      <path
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="1.5"
-                        d="M10.75 8.75L14.25 12L10.75 15.25"
-                      />
-                    </svg>`;
+function generateToggleIcon() {
+  const toggleIcon = createElement("img", "toggle-icon");
+  toggleIcon.src = "./images/toggle-icon.png";
 
   return toggleIcon;
 }
