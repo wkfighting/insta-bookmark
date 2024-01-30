@@ -99,8 +99,20 @@
 }
 
 .no-data {
-  height: 24px;
-  line-height: 24px;
+  display: flex;
+  height: 28px;
+  line-height: 28px;
   color: #c1c1c1;
-  text-align: center;
+}
+
+.no-data-text {
+  flex: 1;
+  padding-left: 14px;
+}
+
+.search-no-data {
+  height: 28px;
+  line-height: 28px;
+  color: #c1c1c1;
+  padding-left: 14px;
 }
