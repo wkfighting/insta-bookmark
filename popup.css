@@ -1,7 +1,7 @@
 .container {
-  width: 300px;
+  width: 350px;
   height: 400px;
-  font-size: 14px !important;
+  font-size: 16px !important;
 }
 
 .search-box {
@@ -30,7 +30,7 @@
 .item {
   display: flex;
   align-items: center;
-  height: 28px;
+  height: 32px;
   border-radius: 4px;
 }
 
@@ -59,8 +59,8 @@
 
 .title {
   flex: 1;
-  height: 28px;
-  line-height: 28px;
+  height: 32px;
+  line-height: 32px;
   user-select: none;
   white-space: nowrap;
   overflow: hidden;
@@ -80,17 +80,17 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 20px;
-  width: 20px;
+  height: 24px;
+  width: 24px;
   background-color: #f2f2f2;
   border-radius: 4px;
-  margin-left: 14px;
+  margin-left: 16px;
   margin-right: 4px;
 }
 
 .favicon {
-  height: 14px;
-  width: 14px;
+  height: 16px;
+  width: 16px;
 }
 
 .hidden {
@@ -99,19 +99,19 @@
 
 .no-data {
   display: flex;
-  height: 28px;
-  line-height: 28px;
+  height: 32px;
+  line-height: 32px;
   color: #c1c1c1;
 }
 
 .no-data-text {
   flex: 1;
-  padding-left: 14px;
+  padding-left: 16px;
 }
 
 .search-no-data {
-  height: 28px;
-  line-height: 28px;
+  height: 32px;
+  line-height: 32px;
   color: #c1c1c1;
-  padding-left: 14px;
+  padding-left: 16px;
 }
