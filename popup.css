@@ -23,7 +23,7 @@
 
 .search-result-box,
 .bookmarks-box {
-  overflow: scroll;
+  overflow-y: auto;
   max-height: 450px;
 }
 
@@ -94,8 +94,7 @@
 }
 
 .hidden {
-  visibility: hidden;
-  height: 0;
+  display: none;
 }
 
 .no-data {
