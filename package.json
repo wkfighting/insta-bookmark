@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "fuse.js": "^7.0.0",
+    "pinyin-pro": "^3.19.6"
+  }
+}

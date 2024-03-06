@@ -24,6 +24,7 @@
 .search-result-box,
 .bookmarks-box {
   overflow-y: auto;
+  max-height: 500px;
 }
 
 .item {

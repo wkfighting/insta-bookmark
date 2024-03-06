@@ -1,7 +1,10 @@
 import { getFaviconUrl } from "./utils/favicon.js";
 import { createElement } from "./utils/element.js";
+import { pinyin } from "./node_modules/pinyin-pro/dist/index.mjs";
+import Fuse from "./node_modules/fuse.js/dist/fuse.mjs";
 
 // TODO: 防抖截流
+// TODO: 文件夹置顶
 
 const bookmarksBox = document.querySelector(".bookmarks-box");
 const searchResultBox = document.querySelector(".search-result-box");
@@ -10,11 +13,37 @@ const searchInput = document.querySelector(".search-input");
 let searchResultElements = [];
 let curFocusIndex = 0;
 
+let fuse;
+
 window.onload = async function () {
-  const bookmarkBarTree = await chrome.bookmarks.getSubTree("1"); // 书签栏
-  const subTree = bookmarkBarTree[0].children;
-  listBookmarks(bookmarksBox, subTree);
+  chrome.bookmarks.getTree((tree) => {
+    console.log("res", tree);
+    const bookmarkBarTree = tree[0].children[0].children; // 书签栏
+    listBookmarks(bookmarksBox, bookmarkBarTree);
+
+    const flattedNodes = flatTreeNodes(tree);
+    fuse = new Fuse(flattedNodes, { keys: ["title", "url", "pinyin"] });
+  });
 };
+
+function flatTreeNodes(treeNodes) {
+  const flattedNodes = [];
+  treeNodes.forEach((node) => {
+    if (node.children) {
+      flattedNodes.push(...flatTreeNodes(node.children));
+    } else {
+      const pinyinOfTitle = pinyin(node.title, {
+        toneType: "none",
+        separator: "",
+      }); // 标题生产对应的拼音
+
+      node.pinyin = pinyinOfTitle;
+      flattedNodes.push(node);
+    }
+  });
+
+  return flattedNodes;
+}
 
 // on search input value change
 searchInput.oninput = async () => {
@@ -28,10 +57,10 @@ searchInput.oninput = async () => {
   searchResultBox.classList.remove("hidden");
   removeAllChildrenEl(searchResultBox);
 
-  const resultBookmarks = await chrome.bookmarks.search(searchInput.value);
+  const resultBookmarks = fuse.search(searchInput.value);
   if (resultBookmarks.length > 0) {
     resultBookmarks.forEach((bookmark) => {
-      const item = generateItem(bookmark, 0, true);
+      const item = generateItem(bookmark.item, 0, true);
       searchResultBox.append(item);
     });
 
