@@ -15,8 +15,8 @@
   "commands": {
     "_execute_action": {
       "suggested_key": {
-        "default": "Alt+E",
-        "mac": "Command+E"
+        "default": "Alt+1",
+        "mac": "Command+1"
       }
     }
   }
