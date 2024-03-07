@@ -1,9 +1,9 @@
 import { getFaviconUrl } from "./utils/favicon.js";
 import { createElement } from "./utils/element.js";
+import { debounce } from "./utils/debounce.js";
 import { pinyin } from "./node_modules/pinyin-pro/dist/index.mjs";
 import Fuse from "./node_modules/fuse.js/dist/fuse.mjs";
 
-// TODO: 防抖截流
 // TODO: 文件夹置顶
 
 const bookmarksBox = document.querySelector(".bookmarks-box");
@@ -12,12 +12,10 @@ const searchInput = document.querySelector(".search-input");
 
 let searchResultElements = [];
 let curFocusIndex = 0;
-
 let fuse;
 
 window.onload = async function () {
   chrome.bookmarks.getTree((tree) => {
-    console.log("res", tree);
     const bookmarkBarTree = tree[0].children[0].children; // 书签栏
     listBookmarks(bookmarksBox, bookmarkBarTree);
 
@@ -46,7 +44,7 @@ function flatTreeNodes(treeNodes) {
 }
 
 // on search input value change
-searchInput.oninput = async () => {
+searchInput.oninput = debounce(function onSearch() {
   if (!searchInput.value) {
     searchResultBox.classList.add("hidden");
     bookmarksBox.classList.remove("hidden");
@@ -75,7 +73,7 @@ searchInput.oninput = async () => {
     );
     searchResultBox.append(noDataBox);
   }
-};
+});
 
 document.addEventListener("keydown", (e) => {
   if (e.key === "ArrowUp") {
