@@ -1,13 +1,19 @@
 {
+  "name": "insta-bookmark",
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "format": "prettier --write '**/*.{js,json,css}'"
+    "format": "prettier --write '**/*.{js,json,css}'",
+    "build": "mkdir -p ./dist && npm run lint:fix && zip -r ./dist/insta-bookmark.zip ./src"
   },
-  "dependencies": {
-    "fuse.js": "^7.0.0",
-    "pinyin-pro": "^3.19.6"
-  },
+  "keywords": [
+    "bookmarks",
+    "bookmark",
+    "chrome",
+    "browser-extension"
+  ],
+  "author": "wkfighting",
+  "license": "MIT",
   "devDependencies": {
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",

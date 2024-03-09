@@ -1,8 +1,8 @@
 import { getFaviconUrl } from './utils/favicon.js';
 import { createElement } from './utils/element.js';
 import { debounce } from './utils/debounce.js';
-import { pinyin } from './node_modules/pinyin-pro/dist/index.mjs';
-import Fuse from './node_modules/fuse.js/dist/fuse.mjs';
+import { pinyin } from './libs/pinyin-pro.js';
+import Fuse from './libs/fuse.js';
 
 // TODO: 文件夹置顶
 

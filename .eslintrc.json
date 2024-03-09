@@ -3,7 +3,9 @@
   "plugins": ["prettier"],
   "rules": {
     "prettier/prettier": "error",
-    "no-undef": "off"
+    "no-undef": "off",
+    "no-func-assign": "off",
+    "no-useless-escape": "off"
   },
   "env": {
     "browser": true,
