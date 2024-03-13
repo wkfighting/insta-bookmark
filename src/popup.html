@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -7,18 +7,14 @@
     <link rel="stylesheet" href="./popup.css" />
   </head>
   <body>
-    <div class="container">
-      <div class="search-box">
-        <input
-          class="search-input"
-          type="text"
-          placeholder="搜索书签"
-          autofocus
-        />
-      </div>
-      <div class="search-result-box"></div>
-      <div class="bookmarks-box"></div>
+    <input class="search-input" type="text" placeholder="搜索书签" autofocus />
+    <div class="pin-bar"></div>
+    <div class="header">
+      <div class="title">书签栏</div>
+      <div class="icon-btn-bar"></div>
     </div>
+    <div class="search-result-box"></div>
+    <div class="bookmarks-box"></div>
 
     <script src="./popup.js" type="module"></script>
   </body>
