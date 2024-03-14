@@ -97,13 +97,19 @@ body {
 }
 
 .title {
-  flex: 1;
   height: 32px;
   line-height: 32px;
   user-select: none;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.children-num {
+  height: 32px;
+  line-height: 32px;
+  color: #757575;
+  margin-left: 4px;
 }
 
 .item:hover,

@@ -127,7 +127,10 @@ function generateItem(bookmarkNode, level, focusable = false) {
   const isFolder = bookmarkNode.children;
   if (isFolder) {
     const toggleIcon = generateToggleIcon();
-    children.push(toggleIcon);
+    const title = createElement('div', 'title', bookmarkNode.title);
+    const childrenNum = createElement('div', 'children-num', `(${bookmarkNode.children.length})`);
+    children.push(toggleIcon, title, childrenNum);
+
     item.addEventListener('click', () => {
       toggleIcon.classList.toggle('expand');
       if (item.nextElementSibling?.classList.contains('next-level-container')) {
@@ -146,10 +149,9 @@ function generateItem(bookmarkNode, level, focusable = false) {
     faviconContainer.append(favicon);
     children.push(faviconContainer);
     item.addEventListener('click', () => openNewTab(bookmarkNode.url));
+    const title = createElement('div', 'title', bookmarkNode.title);
+    children.push(title);
   }
-
-  const title = createElement('div', 'title', bookmarkNode.title);
-  children.push(title);
 
   item.append(...children);
 
