@@ -1,3 +1,18 @@
+/* 自定义滚动条的宽度 */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+/* 自定义滚动条轨道的样式 */
+::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+
+/* 自定义滚动条滑块的样式 */
+::-webkit-scrollbar-thumb {
+  background: #0f58cb;
+}
+
 body {
   margin: 0;
   padding-top: 8px;
@@ -26,17 +41,28 @@ body {
 }
 
 .header {
+  position: absolute;
+  display: flex;
+  background-color: #ffffff;
+  left: 0;
+  right: 4px;
+  padding-left: 16px;
+  padding-right: 12px;
   height: 32px;
   line-height: 32px;
-  padding: 0 16px;
+  z-index: 1;
 }
 
 .header > .title {
   font-weight: 600;
 }
 
-.search-result-box,
+.search-result-box {
+  overflow-y: auto;
+  max-height: 454px;
+}
 .bookmarks-box {
+  padding-top: 32px;
   overflow-y: auto;
   max-height: 454px;
 }
