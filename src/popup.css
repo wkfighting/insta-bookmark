@@ -57,10 +57,7 @@ body {
   font-weight: 600;
 }
 
-.search-result-box {
-  overflow-y: auto;
-  max-height: 454px;
-}
+.search-result-box,
 .bookmarks-box {
   padding-top: 32px;
   overflow-y: auto;
