@@ -110,6 +110,7 @@ function generateItem(bookmarkNode, level, focusable = false) {
   const item = createElement('div', 'item');
   const children = [];
   item.setAttribute('level', level);
+  item.setAttribute('title', bookmarkNode.title);
 
   // 搜索结果回车触发
   if (focusable) {
