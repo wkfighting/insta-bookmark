@@ -1,8 +1,8 @@
 body {
   margin: 0;
-  padding: 8px 0;
+  padding-top: 8px;
   width: 400px;
-  height: 584px;
+  max-height: 592px;
   font-size: 14px !important;
 }
 
@@ -22,6 +22,7 @@ body {
 .pin-bar {
   height: 32px;
   line-height: 32px;
+  display: none;
 }
 
 .header {
@@ -37,7 +38,7 @@ body {
 .search-result-box,
 .bookmarks-box {
   overflow-y: auto;
-  max-height: 500px;
+  max-height: 454px;
 }
 
 .item {
@@ -55,19 +56,21 @@ body {
   display: flex;
   justify-content: center;
   height: 100%;
-  width: 16px;
+  width: 24px;
+  margin-right: 4px;
 }
 
 .item-tab-line {
   height: 100%;
-  width: 0;
-  border-left: 1px solid #c1c1c1;
+  width: 1px;
+  background-color: #d8d8d8;
 }
 
 .toggle-icon {
-  width: 16px;
-  height: 16px;
-  transform: rotate(-90deg);
+  width: 20px;
+  height: 20px;
+  padding: 2px;
+  margin-right: 4px;
 }
 
 .title {
@@ -86,7 +89,7 @@ body {
 }
 
 .expand {
-  transform: rotate(0);
+  transform: rotate(90deg);
 }
 
 .favicon-container {
@@ -97,7 +100,6 @@ body {
   width: 24px;
   background-color: #f2f2f2;
   border-radius: 4px;
-  margin-left: 16px;
   margin-right: 4px;
 }
 
@@ -115,11 +117,11 @@ body {
   height: 32px;
   line-height: 32px;
   color: #c1c1c1;
+  padding: 0 10px;
 }
 
 .no-data-text {
   flex: 1;
-  padding-left: 16px;
 }
 
 .search-no-data {
@@ -127,4 +129,10 @@ body {
   line-height: 32px;
   color: #c1c1c1;
   padding-left: 16px;
+}
+
+.footer {
+  height: 32px;
+  line-height: 32px;
+  border-top: 1px solid #d4e3fc;
 }

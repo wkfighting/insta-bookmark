@@ -4,8 +4,6 @@ import { debounce } from './utils/debounce.js';
 import { pinyin } from './libs/pinyin-pro.js';
 import Fuse from './libs/fuse.js';
 
-// TODO: 文件夹置顶
-
 const bookmarksBox = document.querySelector('.bookmarks-box');
 const searchResultBox = document.querySelector('.search-result-box');
 const searchInput = document.querySelector('.search-input');
@@ -171,7 +169,7 @@ function openNewTab(url) {
 
 function generateToggleIcon() {
   const toggleIcon = createElement('img', 'toggle-icon');
-  toggleIcon.src = './images/toggle-icon.png';
+  toggleIcon.src = './images/toggle-icon.svg';
 
   return toggleIcon;
 }
