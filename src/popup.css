@@ -53,7 +53,8 @@ body {
   z-index: 1;
 }
 
-.header > .title {
+#bookmarks-title,
+#search-result-title {
   font-weight: 600;
 }
 

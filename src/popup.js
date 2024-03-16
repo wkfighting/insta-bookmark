@@ -7,6 +7,8 @@ import Fuse from './libs/fuse.js';
 const bookmarksBox = document.querySelector('.bookmarks-box');
 const searchResultBox = document.querySelector('.search-result-box');
 const searchInput = document.querySelector('.search-input');
+const bookmarksTitle = document.querySelector('#bookmarks-title');
+const searchResultTitle = document.querySelector('#search-result-title');
 
 let searchResultElements = [];
 let curFocusIndex = 0;
@@ -45,12 +47,16 @@ function flatTreeNodes(treeNodes) {
 searchInput.oninput = debounce(function onSearch() {
   if (!searchInput.value) {
     searchResultBox.classList.add('hidden');
+    searchResultTitle.classList.add('hidden');
     bookmarksBox.classList.remove('hidden');
+    bookmarksTitle.classList.remove('hidden');
     return;
   }
 
   bookmarksBox.classList.add('hidden');
+  bookmarksTitle.classList.add('hidden');
   searchResultBox.classList.remove('hidden');
+  searchResultTitle.classList.remove('hidden');
   removeAllChildrenEl(searchResultBox);
 
   const resultBookmarks = fuse.search(searchInput.value);
