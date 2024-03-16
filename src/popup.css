@@ -81,6 +81,7 @@ body {
   height: 100%;
   width: 24px;
   margin-right: 4px;
+  flex: none;
 }
 
 .item-tab-line {
@@ -94,6 +95,7 @@ body {
   height: 20px;
   padding: 2px;
   margin-right: 4px;
+  flex: none;
 }
 
 .title {
@@ -130,6 +132,7 @@ body {
   background-color: #f2f2f2;
   border-radius: 4px;
   margin-right: 4px;
+  flex: none;
 }
 
 .favicon {
