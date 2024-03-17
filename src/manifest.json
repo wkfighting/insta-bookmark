@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "InstaBookmark",
-  "description": "InstaBookmark",
+  "name": "InstaBookmark - 即刻书签",
+  "description": "帮助你更快地找到并打开书签",
   "version": "0.1",
   "action": {
     "default_popup": "popup.html"
@@ -16,7 +16,7 @@
     "_execute_action": {
       "suggested_key": {
         "default": "Alt+1",
-        "mac": "Command+1"
+        "mac": "Alt+1"
       }
     }
   }
