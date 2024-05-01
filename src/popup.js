@@ -9,6 +9,7 @@ const searchResultBox = document.querySelector('.search-result-box');
 const searchInput = document.querySelector('.search-input');
 const bookmarksTitle = document.querySelector('#bookmarks-title');
 const searchResultTitle = document.querySelector('#search-result-title');
+const bookmarkManagementBtn = document.querySelector('.bookmark-management-btn');
 
 let searchResultElements = [];
 let curFocusIndex = 0;
@@ -23,25 +24,6 @@ window.onload = async function () {
     fuse = new Fuse(flattedNodes, { keys: ['title', 'url', 'pinyin'] });
   });
 };
-
-function flatTreeNodes(treeNodes) {
-  const flattedNodes = [];
-  treeNodes.forEach((node) => {
-    if (node.children) {
-      flattedNodes.push(...flatTreeNodes(node.children));
-    } else {
-      const pinyinOfTitle = pinyin(node.title, {
-        toneType: 'none',
-        separator: '',
-      }); // 标题生产对应的拼音
-
-      node.pinyin = pinyinOfTitle;
-      flattedNodes.push(node);
-    }
-  });
-
-  return flattedNodes;
-}
 
 // on search input value change
 searchInput.oninput = debounce(function onSearch() {
@@ -92,6 +74,27 @@ document.addEventListener('keydown', (e) => {
     searchResultElements[curFocusIndex].focus();
   }
 });
+
+bookmarkManagementBtn.addEventListener('click', () => openNewTab('chrome://bookmarks/'));
+
+function flatTreeNodes(treeNodes) {
+  const flattedNodes = [];
+  treeNodes.forEach((node) => {
+    if (node.children) {
+      flattedNodes.push(...flatTreeNodes(node.children));
+    } else {
+      const pinyinOfTitle = pinyin(node.title, {
+        toneType: 'none',
+        separator: '',
+      }); // 标题生产对应的拼音
+
+      node.pinyin = pinyinOfTitle;
+      flattedNodes.push(node);
+    }
+  });
+
+  return flattedNodes;
+}
 
 function listBookmarks(container, bookmarks, level = 0) {
   if (bookmarks.length === 0) {
