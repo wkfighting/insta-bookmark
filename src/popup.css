@@ -185,6 +185,7 @@ body {
 }
 
 .bookmark-management-btn {
+  user-select: none;
   height: 24px;
   line-height: 24px;
   cursor: pointer;
