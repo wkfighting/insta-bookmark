@@ -26,30 +26,32 @@ window.onload = async function () {
 };
 
 // on search input value change
-searchInput.oninput = debounce(function onSearch() {
+searchInput.oninput = debounce(async function onSearch() {
   if (!searchInput.value) {
-    searchResultBox.classList.add('hidden');
-    searchResultTitle.classList.add('hidden');
-    bookmarksBox.classList.remove('hidden');
-    bookmarksTitle.classList.remove('hidden');
+    displayBookmarksBox(true);
+    displaySearchResultsBox(false);
     return;
   }
 
-  bookmarksBox.classList.add('hidden');
-  bookmarksTitle.classList.add('hidden');
-  searchResultBox.classList.remove('hidden');
-  searchResultTitle.classList.remove('hidden');
-  removeAllChildrenEl(searchResultBox);
+  displayBookmarksBox(false);
+  displaySearchResultsBox(true);
 
+  // resultBookmarks 类型：{ item: BookmarkNode, refIndex: number }[]
   const resultBookmarks = fuse.search(searchInput.value);
+
   if (resultBookmarks.length > 0) {
-    resultBookmarks.forEach((bookmark) => {
-      const item = generateItem(bookmark.item, 0, true);
-      searchResultBox.append(item);
-    });
+    const items = [];
+    for (const bookmark of resultBookmarks) {
+      const path = await getPath(bookmark.item);
+      const item = generateItem({ bookmarkNode: bookmark.item, level: 0, isSearch: true, path });
+      items.push(item);
+    }
+
+    removeAllChildrenEl(searchResultBox);
+    searchResultBox.append(...items);
 
     curFocusIndex = 0;
-    searchResultElements = searchResultBox.children;
+    searchResultElements = items;
     setFocus(curFocusIndex);
   } else {
     const noDataBox = createElement('div', 'search-no-data', '未找到任何搜索结果');
@@ -75,7 +77,38 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-bookmarkManagementBtn.addEventListener('click', () => openNewTab('chrome://bookmarks/'));
+bookmarkManagementBtn.addEventListener('click', () => {
+  const bookmarkManagementUrl = 'chrome://bookmarks/';
+  openNewTab(bookmarkManagementUrl);
+});
+
+function displaySearchResultsBox(show) {
+  if (show) {
+    searchResultBox.classList.remove('hidden');
+    searchResultTitle.classList.remove('hidden');
+  } else {
+    searchResultBox.classList.add('hidden');
+    searchResultTitle.classList.add('hidden');
+  }
+}
+
+function displayBookmarksBox(show) {
+  if (show) {
+    bookmarksBox.classList.remove('hidden');
+    bookmarksTitle.classList.remove('hidden');
+  } else {
+    bookmarksBox.classList.add('hidden');
+    bookmarksTitle.classList.add('hidden');
+  }
+}
+
+async function getPath(node) {
+  if (node.parentId === '0') {
+    return node.title;
+  }
+  const parentNode = (await chrome.bookmarks.get(node.parentId))[0];
+  return `${await getPath(parentNode)} / ${node.title}`;
+}
 
 function flatTreeNodes(treeNodes) {
   const flattedNodes = [];
@@ -110,19 +143,19 @@ function listBookmarks(container, bookmarks, level = 0) {
   }
 
   bookmarks.forEach((node) => {
-    const item = generateItem(node, level);
+    const item = generateItem({ bookmarkNode: node, level });
     container.append(item);
   });
 }
 
-function generateItem(bookmarkNode, level, focusable = false) {
+function generateItem({ bookmarkNode, level, isSearch = false, path = '' }) {
   const item = createElement('div', 'item');
   const children = [];
   item.setAttribute('level', level);
-  item.setAttribute('title', bookmarkNode.title);
+  item.setAttribute('title', isSearch ? path : bookmarkNode.title);
 
-  // 搜索结果回车触发
-  if (focusable) {
+  if (isSearch) {
+    // 搜索结果回车触发
     item.setAttribute('tabindex', '-1');
     item.onfocus = () => openNewTab(bookmarkNode.url);
   }
