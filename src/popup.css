@@ -19,6 +19,7 @@ body {
   width: 400px;
   max-height: 592px;
   font-size: 14px !important;
+  user-select: none;
 }
 
 .search-box {
@@ -113,7 +114,6 @@ body {
 .title {
   height: 32px;
   line-height: 32px;
-  user-select: none;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -185,7 +185,6 @@ body {
 }
 
 .bookmark-management-btn {
-  user-select: none;
   height: 24px;
   line-height: 24px;
   cursor: pointer;
