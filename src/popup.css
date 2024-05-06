@@ -19,6 +19,7 @@ body {
   width: 400px;
   max-height: 592px;
   font-size: 14px !important;
+  color: #1f1f1f;
   user-select: none;
 }
 
@@ -187,7 +188,6 @@ body {
 .bookmark-management-btn {
   height: 24px;
   line-height: 24px;
-  cursor: pointer;
   padding: 0 8px;
   border-radius: 4px;
   display: flex;
@@ -202,4 +202,24 @@ body {
 .bookmark-management-icon {
   height: 20px;
   width: 20px;
+}
+
+#contextmenu-container {
+  position: absolute;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 0 8px #b9b9b9;
+  z-index: 9;
+  top: 10000px;
+  left: 0;
+  padding: 4px 0;
+}
+
+.contextmenu-item {
+  line-height: 24px;
+  padding: 0 10px;
+}
+
+.contextmenu-item:hover {
+  background-color: #ededed;
 }

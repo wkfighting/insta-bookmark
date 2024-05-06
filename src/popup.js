@@ -9,7 +9,6 @@ const searchResultBox = document.querySelector('.search-result-box');
 const searchInput = document.querySelector('.search-input');
 const bookmarksTitle = document.querySelector('#bookmarks-title');
 const searchResultTitle = document.querySelector('#search-result-title');
-const bookmarkManagementBtn = document.querySelector('.bookmark-management-btn');
 
 let searchResultElements = [];
 let curFocusIndex = 0;
@@ -77,8 +76,10 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
+const bookmarkManagementBtn = document.querySelector('.bookmark-management-btn');
+const bookmarkManagementUrl = 'chrome://bookmarks/';
+
 bookmarkManagementBtn.addEventListener('click', () => {
-  const bookmarkManagementUrl = 'chrome://bookmarks/';
   openNewTab(bookmarkManagementUrl);
 });
 
@@ -148,11 +149,33 @@ function listBookmarks(container, bookmarks, level = 0) {
   });
 }
 
+const contextmenuContainer = document.querySelector('#contextmenu-container');
+const contextmenuBookmarksManagement = document.querySelector('#contextmenu-bookmarks-management');
+
+contextmenuContainer.addEventListener('contextmenu', (event) => event.preventDefault());
+
+function handleContextmenu(event, bookmarkNode) {
+  contextmenuContainer.style.left = `${event.pageX}px`;
+  contextmenuContainer.style.top = `${event.pageY}px`;
+  handleContextmenuEvent(bookmarkNode);
+}
+
+function handleContextmenuEvent(bookmarkNode) {
+  const isFolder = bookmarkNode.children;
+  const query = isFolder ? `id=${bookmarkNode.id}` : `q=${bookmarkNode.title}`;
+  contextmenuBookmarksManagement.addEventListener('click', () => openNewTab(`${bookmarkManagementUrl}?${query}`));
+}
+
 function generateItem({ bookmarkNode, level, isSearch = false, path = '' }) {
   const item = createElement('div', 'item');
   const children = [];
   item.setAttribute('level', level);
   item.setAttribute('title', isSearch ? path : bookmarkNode.title);
+
+  item.addEventListener('contextmenu', (event) => {
+    event.preventDefault();
+    handleContextmenu(event, bookmarkNode);
+  });
 
   if (isSearch) {
     // 搜索结果回车触发
@@ -173,7 +196,7 @@ function generateItem({ bookmarkNode, level, isSearch = false, path = '' }) {
     const childrenNum = createElement('div', 'children-num', `(${bookmarkNode.children.length})`);
     children.push(toggleIcon, title, childrenNum);
 
-    item.addEventListener('click', () => {
+    item.addEventListener('click', (e) => {
       toggleIcon.classList.toggle('expand');
       if (item.nextElementSibling?.classList.contains('next-level-container')) {
         // 已经渲染过下一级
