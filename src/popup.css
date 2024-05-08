@@ -182,7 +182,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 0 10px;
+  padding: 0 10px;
 }
 
 .bookmark-management-btn {
@@ -210,16 +210,25 @@ body {
   border-radius: 4px;
   box-shadow: 0 0 8px #b9b9b9;
   z-index: 9;
-  top: 10000px;
-  left: 0;
   padding: 4px 0;
 }
 
 .contextmenu-item {
-  line-height: 24px;
+  line-height: 20px;
   padding: 0 10px;
 }
 
 .contextmenu-item:hover {
   background-color: #ededed;
+}
+
+#mask {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #757575;
+  opacity: 0.5;
+  z-index: 8;
 }

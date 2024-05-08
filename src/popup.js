@@ -11,7 +11,8 @@ const bookmarksTitle = document.querySelector('#bookmarks-title');
 const searchResultTitle = document.querySelector('#search-result-title');
 
 let searchResultElements = [];
-let curFocusIndex = 0;
+let preFocusedIndex = 0;
+let curFocusedIndex = 0;
 let fuse;
 
 window.onload = async function () {
@@ -27,31 +28,31 @@ window.onload = async function () {
 // on search input value change
 searchInput.oninput = debounce(async function onSearch() {
   if (!searchInput.value) {
-    displayBookmarksBox(true);
-    displaySearchResultsBox(false);
+    showBookmarksBox(true);
+    showSearchResultsBox(false);
     return;
   }
 
-  displayBookmarksBox(false);
-  displaySearchResultsBox(true);
+  showBookmarksBox(false);
+  showSearchResultsBox(true);
 
   // resultBookmarks 类型：{ item: BookmarkNode, refIndex: number }[]
   const resultBookmarks = fuse.search(searchInput.value);
 
   if (resultBookmarks.length > 0) {
     const items = [];
-    for (const bookmark of resultBookmarks) {
+    for (const [index, bookmark] of resultBookmarks.entries()) {
       const path = await getPath(bookmark.item);
-      const item = generateItem({ bookmarkNode: bookmark.item, level: 0, isSearch: true, path });
+      const item = generateItem({ bookmarkNode: bookmark.item, level: 0, isSearch: true, path, index });
       items.push(item);
     }
 
     removeAllChildrenEl(searchResultBox);
     searchResultBox.append(...items);
 
-    curFocusIndex = 0;
+    curFocusedIndex = 0;
     searchResultElements = items;
-    setFocus(curFocusIndex);
+    setSearchItemFocus();
   } else {
     const noDataBox = createElement('div', 'search-no-data', '未找到任何搜索结果');
     searchResultBox.append(noDataBox);
@@ -59,22 +60,32 @@ searchInput.oninput = debounce(async function onSearch() {
 });
 
 document.addEventListener('keydown', (e) => {
+  showContextmenu(false);
+
   if (e.key === 'ArrowUp') {
-    if (curFocusIndex > 0) {
-      setFocus(curFocusIndex - 1);
+    if (curFocusedIndex === 0) {
+      curFocusedIndex = searchResultElements.length - 1;
+    } else {
+      curFocusedIndex--;
     }
+    setSearchItemFocus();
   }
 
   if (e.key === 'ArrowDown') {
-    if (curFocusIndex < searchResultElements.length - 1) {
-      setFocus(curFocusIndex + 1);
+    if (curFocusedIndex === searchResultElements.length - 1) {
+      curFocusedIndex = 0;
+    } else {
+      curFocusedIndex++;
     }
+    setSearchItemFocus();
   }
 
   if (e.key === 'Enter') {
-    searchResultElements[curFocusIndex].focus();
+    searchResultElements[curFocusedIndex].focus();
   }
 });
+
+document.addEventListener('click', () => showContextmenu(false));
 
 const bookmarkManagementBtn = document.querySelector('.bookmark-management-btn');
 const bookmarkManagementUrl = 'chrome://bookmarks/';
@@ -83,7 +94,7 @@ bookmarkManagementBtn.addEventListener('click', () => {
   openNewTab(bookmarkManagementUrl);
 });
 
-function displaySearchResultsBox(show) {
+function showSearchResultsBox(show) {
   if (show) {
     searchResultBox.classList.remove('hidden');
     searchResultTitle.classList.remove('hidden');
@@ -93,7 +104,7 @@ function displaySearchResultsBox(show) {
   }
 }
 
-function displayBookmarksBox(show) {
+function showBookmarksBox(show) {
   if (show) {
     bookmarksBox.classList.remove('hidden');
     bookmarksTitle.classList.remove('hidden');
@@ -149,12 +160,38 @@ function listBookmarks(container, bookmarks, level = 0) {
   });
 }
 
+let contextmenuTargetItem = null;
 const contextmenuContainer = document.querySelector('#contextmenu-container');
 const contextmenuBookmarksManagement = document.querySelector('#contextmenu-bookmarks-management');
 
 contextmenuContainer.addEventListener('contextmenu', (event) => event.preventDefault());
 
+function setContextmenuTargetItemFocus(isFocus) {
+  if (!contextmenuTargetItem) return;
+
+  if (isFocus) {
+    contextmenuTargetItem.classList.add('focused');
+  } else {
+    contextmenuTargetItem.classList.remove('focused');
+  }
+}
+
+function isExistContextmenu() {
+  return !contextmenuContainer.classList.contains('hidden');
+}
+
+function showContextmenu(show) {
+  if (show) {
+    contextmenuContainer.classList.remove('hidden');
+    setContextmenuTargetItemFocus(true);
+  } else {
+    contextmenuContainer.classList.add('hidden');
+    setContextmenuTargetItemFocus(false);
+  }
+}
+
 function handleContextmenu(event, bookmarkNode) {
+  showContextmenu(true);
   contextmenuContainer.style.left = `${event.pageX}px`;
   contextmenuContainer.style.top = `${event.pageY}px`;
   handleContextmenuEvent(bookmarkNode);
@@ -166,7 +203,7 @@ function handleContextmenuEvent(bookmarkNode) {
   contextmenuBookmarksManagement.addEventListener('click', () => openNewTab(`${bookmarkManagementUrl}?${query}`));
 }
 
-function generateItem({ bookmarkNode, level, isSearch = false, path = '' }) {
+function generateItem({ bookmarkNode, level, isSearch = false, path = '', index = -1 }) {
   const item = createElement('div', 'item');
   const children = [];
   item.setAttribute('level', level);
@@ -174,13 +211,27 @@ function generateItem({ bookmarkNode, level, isSearch = false, path = '' }) {
 
   item.addEventListener('contextmenu', (event) => {
     event.preventDefault();
+    if (contextmenuTargetItem) {
+      setContextmenuTargetItemFocus(false);
+    }
+    if (isSearch) {
+      curFocusedIndex = index;
+      setSearchItemFocus();
+    }
+    contextmenuTargetItem = item;
     handleContextmenu(event, bookmarkNode);
   });
 
   if (isSearch) {
     // 搜索结果回车触发
     item.setAttribute('tabindex', '-1');
-    item.onfocus = () => openNewTab(bookmarkNode.url);
+    item.onfocus = () => {
+      setTimeout(() => {
+        if (!isExistContextmenu()) {
+          openNewTab(bookmarkNode.url);
+        }
+      });
+    };
   }
 
   // 添加缩进
@@ -196,7 +247,7 @@ function generateItem({ bookmarkNode, level, isSearch = false, path = '' }) {
     const childrenNum = createElement('div', 'children-num', `(${bookmarkNode.children.length})`);
     children.push(toggleIcon, title, childrenNum);
 
-    item.addEventListener('click', (e) => {
+    item.addEventListener('click', () => {
       toggleIcon.classList.toggle('expand');
       if (item.nextElementSibling?.classList.contains('next-level-container')) {
         // 已经渲染过下一级
@@ -248,8 +299,8 @@ function removeAllChildrenEl(parent) {
   }
 }
 
-function setFocus(index) {
-  searchResultElements[curFocusIndex].classList.remove('focused');
-  searchResultElements[index].classList.add('focused');
-  curFocusIndex = index;
+function setSearchItemFocus() {
+  searchResultElements[preFocusedIndex].classList.remove('focused');
+  searchResultElements[curFocusedIndex].classList.add('focused');
+  preFocusedIndex = curFocusedIndex;
 }
