@@ -60,7 +60,9 @@ searchInput.oninput = debounce(async function onSearch() {
 });
 
 document.addEventListener('keydown', (e) => {
-  showContextmenu(false);
+  if (isExistContextmenu()) {
+    showContextmenu(false);
+  }
 
   if (e.key === 'ArrowUp') {
     if (curFocusedIndex === 0) {
@@ -85,7 +87,11 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-document.addEventListener('click', () => showContextmenu(false));
+document.addEventListener('click', () => {
+  if (isExistContextmenu()) {
+    showContextmenu(false);
+  }
+});
 
 const bookmarkManagementBtn = document.querySelector('.bookmark-management-btn');
 const bookmarkManagementUrl = 'chrome://bookmarks/';
@@ -226,6 +232,7 @@ function generateItem({ bookmarkNode, level, isSearch = false, path = '', index 
     // 搜索结果回车触发
     item.setAttribute('tabindex', '-1');
     item.onfocus = () => {
+      // 打开 contextmenu 时不知啥原因会出发 focus 事件，所以这里规避处理了一下
       setTimeout(() => {
         if (!isExistContextmenu()) {
           openNewTab(bookmarkNode.url);
