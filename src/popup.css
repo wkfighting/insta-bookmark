@@ -221,14 +221,3 @@ body {
 .contextmenu-item:hover {
   background-color: #ededed;
 }
-
-#mask {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: #757575;
-  opacity: 0.5;
-  z-index: 8;
-}

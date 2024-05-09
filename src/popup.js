@@ -93,6 +93,18 @@ document.addEventListener('click', () => {
   }
 });
 
+bookmarksBox.addEventListener('scroll', () => {
+  if (isExistContextmenu()) {
+    showContextmenu(false);
+  }
+});
+
+searchResultBox.addEventListener('scroll', () => {
+  if (isExistContextmenu()) {
+    showContextmenu(false);
+  }
+});
+
 const bookmarkManagementBtn = document.querySelector('.bookmark-management-btn');
 const bookmarkManagementUrl = 'chrome://bookmarks/';
 
@@ -198,9 +210,30 @@ function showContextmenu(show) {
 
 function handleContextmenu(event, bookmarkNode) {
   showContextmenu(true);
-  contextmenuContainer.style.left = `${event.pageX}px`;
-  contextmenuContainer.style.top = `${event.pageY}px`;
+  setContextmenuPosition(event);
   handleContextmenuEvent(bookmarkNode);
+}
+
+function setContextmenuPosition(event) {
+  const pageX = event.pageX;
+  const pageY = event.pageY;
+  const pageWidth = document.documentElement.clientWidth;
+  const pageHeight = document.documentElement.clientHeight;
+  const containerWidth = contextmenuContainer.clientWidth;
+  const containerHeight = contextmenuContainer.clientHeight;
+  let x = pageX;
+  let y = pageY;
+
+  if (pageX + containerWidth > pageWidth) {
+    x = Math.max(0, pageX - containerWidth);
+  }
+
+  if (pageY + containerHeight > pageHeight) {
+    y = Math.max(0, pageY - containerHeight);
+  }
+
+  contextmenuContainer.style.left = `${x}px`;
+  contextmenuContainer.style.top = `${y}px`;
 }
 
 function handleContextmenuEvent(bookmarkNode) {
