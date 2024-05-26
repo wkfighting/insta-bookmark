@@ -120,6 +120,10 @@ body {
   text-overflow: ellipsis;
 }
 
+.spacer {
+  flex-grow: 1;
+}
+
 .children-num {
   height: 32px;
   line-height: 32px;
@@ -214,10 +218,35 @@ body {
 }
 
 .contextmenu-item {
-  line-height: 20px;
+  line-height: 24px;
   padding: 0 10px;
 }
 
 .contextmenu-item:hover {
   background-color: #ededed;
+}
+
+.more-btn {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  border-radius: 12px;
+  margin-left: 10px;
+  width: 24px;
+  height: 24px;
+  overflow: hidden;
+}
+
+.more-btn-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.more-btn:hover {
+  background-color: #dddddd;
+}
+
+.item:hover .more-btn {
+  display: flex;
 }

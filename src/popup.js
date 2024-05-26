@@ -83,7 +83,7 @@ document.addEventListener('keydown', (e) => {
   }
 
   if (e.key === 'Enter') {
-    searchResultElements[curFocusedIndex].focus();
+    searchResultElements[curFocusedIndex].click();
   }
 });
 
@@ -264,14 +264,6 @@ function generateItem({ bookmarkNode, level, isSearch = false, path = '', index 
   if (isSearch) {
     // 搜索结果回车触发
     item.setAttribute('tabindex', '-1');
-    item.onfocus = () => {
-      // 打开 contextmenu 时不知啥原因会出发 focus 事件，所以这里规避处理了一下
-      setTimeout(() => {
-        if (!isExistContextmenu()) {
-          openNewTab(bookmarkNode.url);
-        }
-      });
-    };
   }
 
   // 添加缩进
@@ -309,9 +301,25 @@ function generateItem({ bookmarkNode, level, isSearch = false, path = '', index 
     children.push(title);
   }
 
-  item.append(...children);
+  const spacer = createElement('div', 'spacer'); // 用于讲更多按钮置于尾部
+  const moreBtn = generateMoreBtn(bookmarkNode);
+  item.append(...children, spacer, moreBtn);
 
   return item;
+}
+
+function generateMoreBtn(bookmarkNode) {
+  const moreBtn = createElement('div', 'more-btn');
+  const icon = createElement('img', 'more-btn-icon');
+  icon.src = './images/more_btn.svg';
+  moreBtn.append(icon);
+
+  moreBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    handleContextmenu(e, bookmarkNode);
+  });
+
+  return moreBtn;
 }
 
 function generateItemTab() {
@@ -342,5 +350,6 @@ function removeAllChildrenEl(parent) {
 function setSearchItemFocus() {
   searchResultElements[preFocusedIndex].classList.remove('focused');
   searchResultElements[curFocusedIndex].classList.add('focused');
+  searchResultElements[curFocusedIndex].scrollIntoView(false);
   preFocusedIndex = curFocusedIndex;
 }
