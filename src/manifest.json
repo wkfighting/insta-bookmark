@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "InstaBookmark - 即刻书签",
-  "description": "极简、方便，帮助你更快地找到并打开书签",
-  "version": "0.1",
+  "description": "一个极简、快捷的书签插件",
+  "version": "0.2",
   "action": {
     "default_popup": "popup.html"
   },
