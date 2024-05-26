@@ -149,7 +149,7 @@ function flatTreeNodes(treeNodes) {
       const pinyinOfTitle = pinyin(node.title, {
         toneType: 'none',
         separator: '',
-      }); // 标题生产对应的拼音
+      }); // 标题生成对应的拼音
 
       node.pinyin = pinyinOfTitle;
       flattedNodes.push(node);
@@ -178,19 +178,24 @@ function listBookmarks(container, bookmarks, level = 0) {
   });
 }
 
-let contextmenuTargetItem = null;
+let contextmenuTargetItemEl = null;
+let focusedBookmark = null;
 const contextmenuContainer = document.querySelector('#contextmenu-container');
 const contextmenuBookmarksManagement = document.querySelector('#contextmenu-bookmarks-management');
+const contextmenuCopyBtn = document.querySelector('#contextmenu-copy-btn');
+const contextmenuNewWindow = document.querySelector('#contextmenu-new-window');
+const contextmenuPrivateWindow = document.querySelector('#contextmenu-private-window');
+const contextDividerLines = document.querySelectorAll('.contextmenu-divider-line');
 
 contextmenuContainer.addEventListener('contextmenu', (event) => event.preventDefault());
 
 function setContextmenuTargetItemFocus(isFocus) {
-  if (!contextmenuTargetItem) return;
+  if (!contextmenuTargetItemEl) return;
 
   if (isFocus) {
-    contextmenuTargetItem.classList.add('focused');
+    contextmenuTargetItemEl.classList.add('focused');
   } else {
-    contextmenuTargetItem.classList.remove('focused');
+    contextmenuTargetItemEl.classList.remove('focused');
   }
 }
 
@@ -209,9 +214,24 @@ function showContextmenu(show) {
 }
 
 function handleContextmenu(event, bookmarkNode) {
+  focusedBookmark = bookmarkNode;
+
+  const isFolder = bookmarkNode.children;
+  if (isFolder) {
+    contextmenuCopyBtn.classList.add('hidden');
+    contextmenuNewWindow.classList.add('hidden');
+    contextmenuPrivateWindow.classList.add('hidden');
+    contextDividerLines.forEach((divider) => divider.classList.add('hidden'));
+  } else {
+    contextmenuCopyBtn.classList.remove('hidden');
+    contextmenuNewWindow.classList.remove('hidden');
+    contextmenuPrivateWindow.classList.remove('hidden');
+    contextDividerLines.forEach((divider) => divider.classList.remove('hidden'));
+  }
+
   showContextmenu(true);
   setContextmenuPosition(event);
-  handleContextmenuEvent(bookmarkNode);
+  handleContextmenuEvent();
 }
 
 function setContextmenuPosition(event) {
@@ -236,10 +256,35 @@ function setContextmenuPosition(event) {
   contextmenuContainer.style.top = `${y}px`;
 }
 
-function handleContextmenuEvent(bookmarkNode) {
-  const isFolder = bookmarkNode.children;
-  const query = isFolder ? `id=${bookmarkNode.id}` : `q=${bookmarkNode.title}`;
-  contextmenuBookmarksManagement.addEventListener('click', () => openNewTab(`${bookmarkManagementUrl}?${query}`));
+function toBookmarksManagement() {
+  const isFolder = focusedBookmark.children;
+  const query = isFolder ? `id=${focusedBookmark.id}` : `q=${focusedBookmark.title}`;
+  openNewTab(`${bookmarkManagementUrl}?${query}`);
+}
+
+function copyBookmarkUrl() {
+  setClipboard(focusedBookmark.url);
+}
+
+function openInNewWindow() {
+  openNewWindow(focusedBookmark.url);
+}
+
+function openInNewPrivateWindow() {
+  openNewWindow(focusedBookmark.url, true);
+}
+
+function handleContextmenuEvent() {
+  // 先移除事件，避免触发多次
+  contextmenuBookmarksManagement.removeEventListener('click', toBookmarksManagement);
+  contextmenuCopyBtn.removeEventListener('click', copyBookmarkUrl);
+  contextmenuNewWindow.removeEventListener('click', openInNewWindow);
+  contextmenuPrivateWindow.removeEventListener('click', openInNewPrivateWindow);
+
+  contextmenuBookmarksManagement.addEventListener('click', toBookmarksManagement);
+  contextmenuCopyBtn.addEventListener('click', copyBookmarkUrl);
+  contextmenuNewWindow.addEventListener('click', openInNewWindow);
+  contextmenuPrivateWindow.addEventListener('click', openInNewPrivateWindow);
 }
 
 function generateItem({ bookmarkNode, level, isSearch = false, path = '', index = -1 }) {
@@ -250,14 +295,14 @@ function generateItem({ bookmarkNode, level, isSearch = false, path = '', index 
 
   item.addEventListener('contextmenu', (event) => {
     event.preventDefault();
-    if (contextmenuTargetItem) {
+    if (contextmenuTargetItemEl) {
       setContextmenuTargetItemFocus(false);
     }
     if (isSearch) {
       curFocusedIndex = index;
       setSearchItemFocus();
     }
-    contextmenuTargetItem = item;
+    contextmenuTargetItemEl = item;
     handleContextmenu(event, bookmarkNode);
   });
 
@@ -334,6 +379,15 @@ function openNewTab(url) {
   chrome.tabs.create({ url });
 }
 
+/**
+ *
+ * @param {string} url
+ * @param {boolean} incognito 隐身
+ */
+function openNewWindow(url, incognito = false) {
+  chrome.windows.create({ url, incognito });
+}
+
 function generateToggleIcon() {
   const toggleIcon = createElement('img', 'toggle-icon');
   toggleIcon.src = './images/toggle-icon.svg';
@@ -352,4 +406,11 @@ function setSearchItemFocus() {
   searchResultElements[curFocusedIndex].classList.add('focused');
   searchResultElements[curFocusedIndex].scrollIntoView(false);
   preFocusedIndex = curFocusedIndex;
+}
+
+function setClipboard(text) {
+  const type = 'text/plain';
+  const blob = new Blob([text], { type });
+  const data = [new ClipboardItem({ [type]: blob })];
+  navigator.clipboard.write(data);
 }
