@@ -1,0 +1,170 @@
+:root {
+  /* 浅色主题变量 */
+  --light-bg: #ffffff;
+  --light-text: #333333;
+  --light-border: #e0e0e0;
+  --light-hover: #f5f5f5;
+  --light-selected: #eaeaea;
+  --light-title: #666666;
+  --light-divider: #e5e5e5;
+  --light-contextmenu-bg: #ffffff;
+  --light-contextmenu-hover: #f5f5f5;
+  --light-contextmenu-border: #e0e0e0;
+  --light-header-bg: #ffffff;
+  --light-box-shadow: rgba(0, 0, 0, 0.1);
+  --light-indent-line: #e0e0e0;
+  --light-more-btn: #666666;
+  --light-more-btn-hover: rgba(0, 0, 0, 0.1);
+  --light-scrollbar-track: #f5f5f5;
+  --light-input-text: #333333;
+
+  /* 深色主题变量 */
+  --dark-bg: #2c2c2c;
+  --dark-text: #ffffff;
+  --dark-border: #404040;
+  --dark-hover: rgba(255, 255, 255, 0.1);
+  --dark-selected: #404040;
+  --dark-title: #cccccc;
+  --dark-divider: #404040;
+  --dark-contextmenu-bg: #353535;
+  --dark-contextmenu-hover: rgba(255, 255, 255, 0.1);
+  --dark-contextmenu-border: #505050;
+  --dark-header-bg: #2c2c2c;
+  --dark-box-shadow: rgba(0, 0, 0, 0.3);
+  --dark-indent-line: #404040;
+  --dark-more-btn: #888888;
+  --dark-more-btn-hover: rgba(255, 255, 255, 0.15);
+  --dark-scrollbar-track: #333333;
+  --dark-input-text: #ffffff;
+}
+
+/* 浅色主题样式 */
+body {
+  background-color: var(--light-bg);
+  color: var(--light-text);
+}
+
+/* 标题样式 */
+.header {
+  background-color: var(--light-header-bg);
+}
+
+#bookmarks-title,
+#search-result-title {
+  color: var(--light-title);
+}
+
+/* Footer 分割线 */
+.footer {
+  border-top: 1px solid var(--light-divider);
+}
+
+/* 右键菜单样式 */
+#contextmenu-container {
+  background-color: var(--light-contextmenu-bg);
+  border: 1px solid var(--light-contextmenu-border);
+  box-shadow: 0 2px 10px var(--light-box-shadow);
+}
+
+.contextmenu-item:hover {
+  background-color: var(--light-contextmenu-hover);
+}
+
+.contextmenu-divider-line {
+  background-color: var(--light-contextmenu-border);
+}
+
+/* 深色主题样式 */
+body.dark-theme {
+  background-color: var(--dark-bg);
+  color: var(--dark-text);
+}
+
+/* 深色模式标题栏 */
+body.dark-theme .header {
+  background-color: var(--dark-header-bg);
+}
+
+body.dark-theme #bookmarks-title,
+body.dark-theme #search-result-title {
+  color: var(--dark-title);
+}
+
+/* 深色模式 Footer 分割线 */
+body.dark-theme .footer {
+  border-top: 1px solid var(--dark-divider);
+}
+
+/* 深色模式右键菜单 */
+body.dark-theme #contextmenu-container {
+  background-color: var(--dark-contextmenu-bg);
+  border: 1px solid var(--dark-contextmenu-border);
+  box-shadow: 0 2px 10px var(--dark-box-shadow);
+}
+
+body.dark-theme .contextmenu-item:hover {
+  background-color: var(--dark-contextmenu-hover);
+}
+
+body.dark-theme .contextmenu-divider-line {
+  background-color: var(--dark-contextmenu-border);
+}
+
+/* 深色模式下的项目悬浮和选中状态 */
+body.dark-theme .item:hover,
+body.dark-theme .item.focused {
+  background-color: var(--dark-hover);
+}
+
+/* 缩进线样式 */
+.item-tab-line {
+  background-color: var(--light-indent-line);
+}
+
+/* 更多按钮样式 */
+.more-btn-icon {
+  filter: brightness(0) opacity(0.5);
+}
+
+/* 深色模式滚动条 */
+body.dark-theme ::-webkit-scrollbar-track {
+  background: var(--dark-scrollbar-track);
+}
+
+/* 深色模式缩进线 */
+body.dark-theme .item-tab-line {
+  background-color: var(--dark-indent-line);
+}
+
+/* 深色模式更多按钮 */
+body.dark-theme .more-btn-icon {
+  filter: brightness(0) invert(1) opacity(0.6);
+}
+
+.search-box {
+  border-bottom: 1px solid var(--light-divider);
+}
+
+body.dark-theme .search-box {
+  border-bottom: 1px solid var(--dark-divider);
+}
+
+/* 搜索框输入文字颜色 */
+.search-input {
+  color: var(--light-input-text);
+}
+
+body.dark-theme .search-input {
+  color: var(--dark-input-text);
+}
+
+/* 更多按钮悬浮状态 */
+.more-btn:hover .more-btn-icon {
+  background-color: var(--light-more-btn-hover);
+  border-radius: 4px;
+}
+
+body.dark-theme .more-btn:hover .more-btn-icon {
+  background-color: var(--dark-more-btn-hover);
+  filter: brightness(0) opacity(0.5);
+}
